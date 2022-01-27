@@ -1,6 +1,7 @@
 import PlayersItem from "./PlayersItem";
 import React, {Component} from 'react'
 import HttpRequest from "../HttpRequest";
+import PlayersDetails from "./PlayersDetails";
 
 const datasetApi = "/trainingday/TennisStats/headtohead.json";
 class Players extends Component{
@@ -8,7 +9,6 @@ class Players extends Component{
          super(props);
          this.handlePlayerItem = this.handlePlayerItem.bind(this);
          this.handleBreadcrumb = this.handleBreadcrumb.bind(this);
-         this.store = [];
          this.state = {
              players: null,
              noData: false,
@@ -26,9 +26,9 @@ class Players extends Component{
      }
 
      render(){
-         let component = (<h3>Waiting...</h3>);
+         let component = (<h3>Chargement en cours...</h3>);
          if(this.state.noData){
-             component = (<h3>No data found !</h3>);
+             component = (<h3>Données non trouvées !</h3>);
          }
          else if(this.state.players){
              let liElement = <li className="breadcrumb-item active" aria-current="page">Players list</li>;
@@ -37,7 +37,7 @@ class Players extends Component{
                      <li className="breadcrumb-item"><a href="#" onClick={this.handleBreadcrumb}>Players list</a></li>
                      <li className="breadcrumb-item active" aria-current="page">Player</li>
                  </>
-                 component = <h1>Details</h1>;
+                 component = <PlayersDetails player={this.state.selectedPlayer}/>;
              }
              else{
                  component = this.state.players.map((player) => {
@@ -46,7 +46,7 @@ class Players extends Component{
              }
              component = <>
                  <nav aria-label="breadcrumb">
-                     <ol className="breadcrumb">
+                     <ol className="breadcrumb players-breadcrumb">
                          {liElement}
                      </ol>
                  </nav>
@@ -62,10 +62,8 @@ class Players extends Component{
      componentDidMount() {
          const _self = this;
          this.httpClient.request(datasetApi, "GET").then(function (response){
-             console.log(response)
              let state = {noData: true};
              if(response.hasOwnProperty("players")){
-                 _self.store.players = response.players;
                  state.noData = false;
                  state.players = response.players;
              }
