@@ -2,3 +2,6 @@
 .mouse-hover{
     cursor: pointer;
 }
+.players-breadcrumb{
+    font-weight: bold;
+}
